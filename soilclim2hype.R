@@ -1,3 +1,19 @@
+#' Converts data from Soilclim datasets into HYPE structure  
+#'
+#' @param basins vector of basin names
+#' @param variables desired variables 
+#' @param path_soilclim path of the folder where .rds of Soilclim is stored
+#' @param write if data.table should be written into file
+#' @param xobs if variable belongs to xobs class
+#' @param varhype name of the xobs variable
+#' @param path_out the path and name of the output file
+#'
+#' @return data.table with desired variables
+#' @export text_file .txt
+#'
+#' 
+#'
+
 soilclim2hype = function(basins, variables, path_soilclim, write = FALSE, xobs = FALSE, varhype, path_out){
   require(data.table)
   require(HYPEtools)
