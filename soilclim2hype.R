@@ -15,8 +15,8 @@
 #'
 
 soilclim2hype = function(basins, variables, path_soilclim, write = FALSE, xobs = FALSE, varhype, path_out){
-  require(data.table)
-  require(HYPEtools)
+  library(data.table)
+  library(HYPEtools)
   if (write == TRUE & xobs == FALSE){
     c = data.frame()
     for (i in basins){
