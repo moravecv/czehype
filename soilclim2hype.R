@@ -14,11 +14,12 @@
 #' 
 #'
 
-soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE, xobs = FALSE, varhype, path_out){
+soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
+                          xobs = FALSE, varhype, path_out){
   library(data.table)
   library(HYPEtools)
   if (write == TRUE & xobs == FALSE){ 
-    c <- data.frame() # empty data frame
+    c <- data.table() # empty data table
     for (i in basins){
       a <- data.table(readRDS(paste0(path, i))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
@@ -26,19 +27,21 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE, xobs 
     }
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     WritePTQobs(x = d,filename = path_out, obsid = colnames(d)[2:ncol(d)]) # write PTQobs file
-  }
-  else if (write == TRUE & xobs == TRUE) {
-    c <- data.frame() # empty data frame
+    
+  } else if (write == TRUE & xobs == TRUE) {
+    c <- data.table() # empty data table
     for (i in basins){
       a <- data.table(readRDS(paste0(path, i))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
     }
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
-    WriteXobs(x = d,filename = path_out, comment = variables, variable = rep(varhype, length(colnames(d)[2:ncol(d)])), subid = colnames(d)[2:length(d)])
-  }
-  else {
-    c <- data.frame() # empty data frame
+    WriteXobs(x = d,filename = path_out, comment = variables,
+              variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
+              subid = colnames(d)[2:length(d)])
+    
+  } else {
+    c <- data.table() # empty data table
     for (i in basins){
       a <- data.table(readRDS(paste0(path, i))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
