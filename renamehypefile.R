@@ -6,7 +6,7 @@
 #' @param col_old string name of column in table of names with old name
 #' @param col_new string name of column in table of names with replacement
 #'
-#' @return renamed input file
+#' @return data.table - renamed input file
 #' @export
 #'
 #' @examples
@@ -15,6 +15,14 @@
 #' 
 
 renamehypefile <- function(in_file, name_table, col_old, col_new){
+  # desc: Renames columns of input file according to a table of names
+  # in such manner that HYPE recognizes
+  # arg in_file: input file to be renamed
+  # arg name_table: table of names
+  # arg col_old: string name of column in table of names with old name
+  # arg col_new: string name of column in table of names with replacement
+  # return: data.table - renamed input file
+  
   library(data.table)
   in_file <- data.table(in_file) 
   name_table <- data.table(name_table)

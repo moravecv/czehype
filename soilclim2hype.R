@@ -16,6 +16,16 @@
 
 soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
                           xobs = FALSE, varhype, path_out){
+  # desc: Converts data from Soilclim datasets into HYPE structure
+  # arg basins: vector of basin names
+  # arg variables: desired variables
+  # arg path_soilclim: path of the folder where .rds of Soilclim is stored
+  # arg write: if data.table should be written into file
+  # arg xobs if variable belongs to xobs class
+  # arg varhype: name of the xobs variable
+  # arg path_out: the path and name of the output file
+  # return: data.table with desired variables
+  
   library(data.table)
   library(HYPEtools)
   if (write == TRUE & xobs == FALSE){ 
