@@ -9,7 +9,7 @@
 #' @param path_out the path and name of the output file
 #'
 #' @return data.table with desired variables
-#' @export text_file .txt
+#' @export text_file 
 #'
 #' 
 #'

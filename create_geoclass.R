@@ -1,19 +1,28 @@
 #' Creates geoclass file from geodata file
 #'
-#' @param input_file input geodata file
+#' @param in_file input geodata file
 #' @param vg_typ1 vector of numbers indicating vegetation type 1
 #' @param vg_typ2 vector of numbers indicating vegetation type 2
 #' @param vg_typ3 vector of numbers indicating vegetation type 3
 #' @param sc_river number idicating river class
 #' @param sc_wbody nuber indicating water body class
 #'
-#' @return data.frame of geoclass file
+#' @return data.table of geoclass file
 #' @export indicators
 #'
 #' 
 #' 
 
-create_geoclass = function(input_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wbody){
+create_geoclass <- function(in_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wbody){
+  # desc: Creates geoclass file from geodata file
+  # arg in_file: input geodata file
+  # arg vg_typ1: vector of numbers indicating vegetation type 1
+  # arg vg_typ2: vector of numbers indicating vegetation type 2
+  # arg vg_typ3: vector of numbers indicating vegetation type 3
+  # arg sc_river: number idicating river class
+  # arg sc_wbody: nuber indicating water body class
+  # return: data.table of geoclass file
+  
   library(HYPEtools)
   library(data.table)
   gd <- ReadGeoData(filename = input_file)
@@ -60,4 +69,5 @@ create_geoclass = function(input_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wb
   GC[COMBINATION == "2050", special_class:= 1]
   GC[COMBINATION == "2051", special_class:= 2]
   
+  return(GC)
 }

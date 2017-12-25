@@ -7,10 +7,10 @@
 #' @param col_new string name of column in table of names with replacement
 #'
 #' @return data.table - renamed input file
-#' @export
+#' @export text_file of renamed input file
 #'
 #' @examples
-#' 
+#' renamehypefile
 #' 
 #' 
 

@@ -10,7 +10,11 @@
 #' @return shp with HYPE numbering
 #' @export shp with HYPE numbering
 #'
-#' @examples
+#' @examples 
+#' numbers2shp(shp = "E:/VUV/UTVARY/GEO/SCRATCH/polygon_hran_diss.shp",
+#' layer = "polygon_hran_diss", match_col = "UPOV_ID", 
+#' number_table = "E:/VUV/UTVARY/R/FINAL_ROUTING_NEW.rds", write = T, 
+#' path_out = "E:/VUV/UTVARY/GEO/SCRATCH/polygon_hran_diss2.shp" )
 #' 
 #' 
 #' 
