@@ -10,8 +10,8 @@
 #' @export text_file of renamed input file
 #'
 #' @examples
-#' renamehypefile
-#' 
+#' renamehypefile(in_file = in_file, name_table = name_table,
+#' col_old = "FROM", col_new = "FR_ORD")
 #' 
 
 renamehypefile <- function(in_file, name_table, col_old, col_new){

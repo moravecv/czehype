@@ -16,8 +16,6 @@
 #' number_table = "E:/VUV/UTVARY/R/FINAL_ROUTING_NEW.rds", write = T, 
 #' path_out = "E:/VUV/UTVARY/GEO/SCRATCH/polygon_hran_diss2.shp" )
 #' 
-#' 
-#' 
 
 numbers2shp <- function(shp, layer, match_col, number_table, write = FALSE, path_out){
   # desc: Creates HYPE numbering for shapefile recognizable by WHIST

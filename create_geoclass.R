@@ -1,16 +1,18 @@
-#' Creates geoclass file from geodata file
+#' Creates Geoclass file from Geodata file
 #'
-#' @param in_file input geodata file
+#' @param in_file input Geodata file
 #' @param vg_typ1 vector of numbers indicating vegetation type 1
 #' @param vg_typ2 vector of numbers indicating vegetation type 2
 #' @param vg_typ3 vector of numbers indicating vegetation type 3
 #' @param sc_river number idicating river class
 #' @param sc_wbody nuber indicating water body class
 #'
-#' @return data.table of geoclass file
-#' @export indicators
-#'
+#' @return data.table of Geoclass file
+#' @export text_file of Geoclass data
 #' 
+#' @examples 
+#' create_geoclass(in_file = "E:/Geodata.txt", vg_typ1 = c(1,2,3),
+#' vg_typ2 = c(4,5,6), vg_typ3 = c(7,8,9), sc_river = 12, sc_wbody = 13)
 #' 
 
 create_geoclass <- function(in_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wbody){

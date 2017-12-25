@@ -11,7 +11,9 @@
 #' @return data.table with desired variables
 #' @export text_file 
 #'
-#' 
+#' soilclim2hype(basins = c("BER_3030", "HVL_3030"), variables = "Rain",
+#' path_soilclim = "E:/SOILCLIM/", write = T, xobs = T, varhype = "rswe",
+#' path_out = "E:/SOLCLIM_OUT/")
 #'
 
 soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
