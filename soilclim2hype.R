@@ -32,21 +32,31 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
   library(HYPEtools)
   if (write == TRUE & xobs == FALSE){ 
     c <- data.table() # empty data table
-    for (i in basins){
-      a <- data.table(readRDS(paste0(path, i))) # read rds
+    n <- length(basins)
+    pb <- txtProgressBar(min = 0, max = n, style = 3)
+    for (i in 1:n){
+      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
+      setTxtProgressBar(pb, i)
     }
+    close(pb)
+    message("Provadim dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     WritePTQobs(x = d,filename = path_out, obsid = colnames(d)[2:ncol(d)]) # write PTQobs file
     
   } else if (write == TRUE & xobs == TRUE) {
     c <- data.table() # empty data table
-    for (i in basins){
-      a <- data.table(readRDS(paste0(path, i))) # read rds
+    n <- length(basins)
+    pb <- txtProgressBar(min = 0, max = n, style = 3)
+    for (i in 1:n){
+      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
+      setTxtProgressBar(pb, i)
     }
+    close(pb)
+    message("Provadim dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     WriteXobs(x = d,filename = path_out, comment = variables,
               variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
@@ -54,11 +64,16 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     
   } else {
     c <- data.table() # empty data table
-    for (i in basins){
-      a <- data.table(readRDS(paste0(path, i))) # read rds
+    n <- length(basins)
+    pb <- txtProgressBar(min = 0, max = n, style = 3)
+    for (i in 1:n){
+      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
+      setTxtProgressBar(pb, i)
     }
+    close(pb)
+    message("Provadim dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     return(d) #return data.table
   }
