@@ -41,7 +41,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
       setTxtProgressBar(pb, i)
     }
     close(pb)
-    message("Provadim dcast ...")
+    message("Executing dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     WritePTQobs(x = d,filename = path_out, obsid = colnames(d)[2:ncol(d)]) # write PTQobs file
     
@@ -56,7 +56,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
       setTxtProgressBar(pb, i)
     }
     close(pb)
-    message("Provadim dcast ...")
+    message("Executing dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     WriteXobs(x = d,filename = path_out, comment = variables,
               variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
@@ -73,7 +73,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
       setTxtProgressBar(pb, i)
     }
     close(pb)
-    message("Provadim dcast ...")
+    message("Executing dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
     return(d) #return data.table
   }
