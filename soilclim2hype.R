@@ -13,7 +13,7 @@
 #'
 #' soilclim2hype(basins = c("BER_3030", "HVL_3030"), variables = "Rain",
 #' path_soilclim = "E:/SOILCLIM/", write = T, xobs = T, varhype = "rswe",
-#' path_out = "E:/SOLCLIM_OUT/")
+#' path_out = "E:/SOLCLIM_OUT/Xobs.txt")
 #'
 
 soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
@@ -58,7 +58,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     close(pb)
     message("Provadim dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
-    WriteXobs(x = d,filename = path_out, comment = variables,
+    WriteXobs(x = d, filename = path_out, comment = variables,
               variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
               subid = colnames(d)[2:length(d)])
     
