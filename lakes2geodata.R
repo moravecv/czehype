@@ -33,8 +33,8 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
   colnames(olake_area) <- c("UPOV_ID", "OLAKE_AREA")
   ilake_area <- readRDS(ilake_area)
   colnames(ilake_area) <- c("UPOV_ID", "ILAKE_AREA")
-  gd$SLC_2050 <- 0 # SLC OLAKE set to zero
-  gd$SLC_2051 <- 0 # SLC ILAKE set to zero
+  gd$SLC_5050 <- 0 # SLC OLAKE set to zero
+  gd$SLC_5151 <- 0 # SLC ILAKE set to zero
   gd2 <- merge(as.data.frame(gd), as.data.frame(olake_area),
                by = c("UPOV_ID", "UPOV_ID"), all = T) # join olake table to geodata
   gd3 <- merge(as.data.frame(gd2), as.data.frame(ilake_area), 
@@ -46,10 +46,10 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
   gd3[,wbodies] <- 0 # set zero to waterbodies fractions 
   gd3$OLAKE_AREA[is.na(gd3$OLAKE_AREA)] <- 0 # set zero where is NA
   gd3$ILAKE_AREA[is.na(gd3$ILAKE_AREA)] <- 0 # set zero where is NA
-  gd3$SLC_2050 <- gd3$OLAKE_AREA / gd3$AREA # compute olake fraction
-  gd3$SLC_2051 <- gd3$ILAKE_AREA / gd3$AREA # compute ilake fraction
+  gd3$SLC_5050 <- gd3$OLAKE_AREA / gd3$AREA # compute olake fraction
+  gd3$SLC_5151 <- gd3$ILAKE_AREA / gd3$AREA # compute ilake fraction
   gd3$DIFF <- apply(gd3[,col_pos], 1, function(x) {sum(x) - 1}) # compute diff from 1
-  pattern <- c("SLC_10", "SLC_21", "SLC_2050", "SLC_2051") # flag urban and water areas
+  pattern <- c("SLC_10", "SLC_21", "SLC_5050", "SLC_5151") # flag urban and water areas
   urb_pos <- grep(pattern = paste(pattern, collapse = "|"), x = colnames(gd3),invert = T)
   urb_names <- grep("SLC_", colnames(gd3)[urb_pos], value = T) # colnames except urban&water
   urb_pos2 <- which(colnames(gd3) %in% urb_names) # SLC column indexes except urban&water
