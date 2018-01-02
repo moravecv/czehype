@@ -31,11 +31,13 @@ numbers2shp <- function(shp, layer, match_col, number_table, write = FALSE, path
   library(rgdal)
   if (write == TRUE){
     table <- data.table(readRDS(number_table))
+    message("Reading shapefile ...")
     shp <- readOGR(dsn = shp, layer = layer)
     shp@data <- data.frame(shp@data, table[match(shp@data[[match_col]], table[[match_col]]),]) # merge table of shp with number table
     k <- 1
     shp@data$SUBID <- NA_integer_ # create NA column
     shp@data$DOWN <- NA_integer_ # create NA column
+    message("Numbering shapefile ...")
     for (i in shp@data$UPOV_ID){ 
       shp@data$SUBID[which(shp@data$UPOV_ID == i)] <- k # UPOV = i >> SUBID = k
       shp@data$DOWN[which(shp@data$TO == i)] <- k # TO = i >> DOWN = k
@@ -43,14 +45,17 @@ numbers2shp <- function(shp, layer, match_col, number_table, write = FALSE, path
     }
     #shp@data[is.na(shp@data)] <- -9999
     shp@data$DOWN[which(shp@data$TO == -9999)] <- -9999 # replace NA's with -9999
+    message("Writing shapefile ...")
     writeOGR(shp, path_out, layer, driver="ESRI Shapefile") # write shapefile
   } else {
     table <- data.table(readRDS(number_table))
+    message("Reading shapefile ...")
     shp <- readOGR(dsn = shp, layer = layer)
     shp@data <- data.frame(shp@data, table[match(shp@data[[match_col]], table[[match_col]]), ]) # merge table of shp with number table
     k <- 1
     shp@data$SUBID <- NA_integer_ # create NA column
     shp@data$DOWN <- NA_integer_ # create NA column
+    message("Numbering shapefile ...")
     for (i in shp@data$UPOV_ID){
       shp@data$SUBID[which(shp@data$UPOV_ID == i)] <- k # UPOV = i >> SUBID = k
       shp@data$DOWN[which(shp@data$TO == i)] <- k # TO = i >> DOWN = k
