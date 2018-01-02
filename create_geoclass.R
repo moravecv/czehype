@@ -27,7 +27,7 @@ create_geoclass <- function(in_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wbod
   
   library(HYPEtools)
   library(data.table)
-  gd <- ReadGeoData(filename = input_file)
+  gd <- ReadGeoData(filename = in_file)
   tt <- data.frame(t(gd))
   GC <- data.table(rownames(tt))
   GC <- GC[V1 %like% "SLC",]
