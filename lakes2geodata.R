@@ -2,8 +2,8 @@
 #' other fractions while protecting urban areas
 #'
 #' @param geodata path to the GeoData.txt file
-#' @param olake_area path to two column file of olake area
-#' @param ilake_area path to two column file of ilake area
+#' @param olake_area path to two column (RDS) file of olake area
+#' @param ilake_area path to two column (RDS) file of ilake area
 #' @param write write GeoData.txt if TRUE
 #' @param path_out path where to save the GeoData.txt file
 #'
@@ -19,8 +19,8 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
   # desc: Replaces fractions of ilake and olake areas and compensates sizes of 
   # other fractions while protecting urban areas
   # arg geodata: path to the GeoData.txt file
-  # arg olake_area: path to two column file of olake area
-  # arg ilake_area: path to two column file of ilake area
+  # arg olake_area: path to two column file (RDS) of olake area
+  # arg ilake_area: path to two column file (RDS) of ilake area
   # arg write: write GeoData.txt if TRUE
   # arg path_out: path where to save the GeoData.txt file
   # return: data.frame of fixed GeoData
@@ -53,6 +53,7 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
   urb_pos <- grep(pattern = paste(pattern, collapse = "|"), x = colnames(gd3),invert = T)
   urb_names <- grep("SLC_", colnames(gd3)[urb_pos], value = T) # colnames except urban&water
   urb_pos2 <- which(colnames(gd3) %in% urb_names) # SLC column indexes except urban&water
+  message("Recalculating SLC fractions ...")
   n <- nrow(gd3)
   pb <- txtProgressBar(min = 0, max = n, style = 3)
   for (i in 1:nrow(gd3)){
@@ -66,11 +67,11 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
     if (any(vec2 < 0)){
       # if any value in fixed vector is lower than 0 proceed with while cycle
       while (any(vec2 < 0)) {
-        # while any value in fixed vector i lower than 0 repeat cycle
+        # while any value in fixed vector is lower than 0 repeat cycle
         deduct <- sum(vec[which(vec2 < 0)]) 
         # sum all the values in vector "vec" which end up being negative in vector "vec2"
-        diff <- diff - deduct # deduct the sum of potential negative vaule from the diff 
-        vec2[vec2 < 0] <- 0 # set to zero the vaules which are negative
+        diff <- diff - deduct # deduct the sum of potential negative value from the diff 
+        vec2[vec2 < 0] <- 0 # set to zero the values which are negative
         p_vals2 <- which(vec2 != 0) # indexes of values to be fixed
         inverse2 <- 1 - vec2[p_vals2] # vector of add-on values to 1
         scale2 <- inverse2 / sum(inverse2) # scale values to get percentage for diff spread
@@ -93,6 +94,7 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
     setTxtProgressBar(pb, i)
   }
   close(pb)
+  gd3 <- SortGeoData(gd3) # sort new geodata
   if (write == TRUE){
     message("Writing GeoData to .txt ...")
     WriteGeoData(x = gd3, filename = path_out)
