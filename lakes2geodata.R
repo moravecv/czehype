@@ -56,25 +56,39 @@ lakes2geodata <- function(geodata, olake_area, ilake_area, write, path_out){
   n <- nrow(gd3)
   pb <- txtProgressBar(min = 0, max = n, style = 3)
   for (i in 1:nrow(gd3)){
-    #gd3[i,col_pos] debug line
     add.diff <- which(colnames(gd3) == "DIFF") # column index of the diff value
     diff <- gd3[i, add.diff] # diff value
     p_vals <- which(gd3[i,urb_pos2] != 0) # indexes of values to be fixed
-    n <- length(p_vals) # number of values to be fixed
-    diff_spread <- diff / n # fraction of difference to be added to each value
-    if (length(which(gd3[i,urb_pos2][p_vals] < diff_spread)) == 0){ 
-      # if there is no value lower than the fraction itself then subtract the diff fraction 
-      gd3[i,urb_pos2][p_vals] <- gd3[i,urb_pos2][p_vals] - diff_spread
+    vec <- gd3[i,urb_pos2][p_vals] # create vector of values to be fixed
+    inverse <- 1 - vec # vector of add-on values to 1
+    scale <- inverse / sum(inverse) # scale values to get percentage for diff spread
+    vec2 <- vec - (scale * diff) # vector of fixed values
+    if (any(vec2 < 0)){
+      # if any value in fixed vector is lower than 0 proceed with while cycle
+      while (any(vec2 < 0)) {
+        # while any value in fixed vector i lower than 0 repeat cycle
+        deduct <- sum(vec[which(vec2 < 0)]) 
+        # sum all the values in vector "vec" which end up being negative in vector "vec2"
+        diff <- diff - deduct # deduct the sum of potential negative vaule from the diff 
+        vec2[vec2 < 0] <- 0 # set to zero the vaules which are negative
+        p_vals2 <- which(vec2 != 0) # indexes of values to be fixed
+        inverse2 <- 1 - vec2[p_vals2] # vector of add-on values to 1
+        scale2 <- inverse2 / sum(inverse2) # scale values to get percentage for diff spread
+        vec2[p_vals2] <- vec2[p_vals2] - (scale2 * diff) # vector of fixed values
+      }
+      gd3[i,urb_pos2][p_vals] <- vec2 # write vector of fixed values in the gd dataframe
+      check <- sum(gd3[i,col_pos]) # check if the sum of slcs is equal to 1
+      if (check < 1){
+        # if check value is lower than 1 then add back to the latest fixed values  
+        # to get sum slcs == 1
+        fix <- 1 - check # calculate fix value 
+        vec2[p_vals2] <- vec2[p_vals2] + (scale2 * fix) # spread it among the latest values
+        gd3[i,urb_pos2][p_vals] <- vec2 # write vector of fixed values in the gd dataframe
+      } else {
+        next
+      }
     } else {
-      # else sum all the values lower than the fraction and subtract it from the total diff
-      small <- sum(gd3[i,urb_pos2][p_vals][which(gd3[i,urb_pos2][p_vals] < diff_spread)])
-      diff_fix <- diff - small # new diff value
-      # set all the values lover than the fraction of diff to zero
-      gd3[i,urb_pos2][p_vals][which(gd3[i,urb_pos2][p_vals] < diff_spread)] <- 0
-      p_vals_fix <- which(gd3[i,urb_pos2] != 0) # new indexes of values to be fixed
-      n_fix <- length(p_vals_fix) # new number of values to be fixed
-      diff_spread_fix <- diff_fix / n_fix # new fraction of difference 
-      gd3[i,urb_pos2][p_vals_fix] <- gd3[i,urb_pos2][p_vals_fix] - diff_spread_fix
+      gd3[i,urb_pos2][p_vals] <- vec2 # write vector of fixed values in the gd dataframe
     }
     setTxtProgressBar(pb, i)
   }
