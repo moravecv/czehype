@@ -28,6 +28,7 @@ find_cal_subids <- function(list, gd, write, path_out){
   }
   all_subids <- unique(all_subids)
   if (write == TRUE){
+    print(length(all_subids))
     write.table(x = t(all_subids), file = path_out, quote = F, sep = " ",
                 row.names = FALSE, col.names = FALSE)
   } else {
