@@ -17,6 +17,7 @@ get_subid_shp <- function(subid,shape){
   # arg shape: shp of all catchments
   # return: SpatialPolygonsDataFrame of selected SUBID
   
+  library(rgdal)
   out <- shape[match(subid, shape$SUBID), ]
   out$SUBID <- subid
   return(out)
@@ -39,6 +40,8 @@ get_usage <- function(catchment){
   # arg catchment: SpatialPolygonsDataFrame of selected SUBID
   # return: dataframe of water usage for specified SUBID
   
+  library(rgdal)
+  library(rgeos)
   bb <- bbox(catchment)
   u <- uzivani[!is.na(X) & !is.na(Y)][X >= bb['x', 'min'] & X <= bb['x', 'max'] 
                                       & Y >= bb['y', 'min'] & Y <= bb['y', 'max']]
@@ -91,6 +94,8 @@ get_usage_all <- function(list, shape){
   
   library(plyr)
   library(data.table)
+  library(rgdal)
+  library(rgeos)
   uziv = data.frame(matrix(nrow = 0,ncol = 8))
   colnames(uziv) = c("DTM","POD","POV","VYP","perm_POD","perm_POV","perm_VYP","SUBID")
   uziv$DTM = as.Date(uziv$DTM)
@@ -102,13 +107,17 @@ get_usage_all <- function(list, shape){
   uziv$perm_VYP = as.integer(uziv$perm_VYP)
   uziv$SUBID = as.integer(uziv$SUBID)
   data('uzivani')
-  for (i in list){
-    print(i)
-    subid <- get_subid_shp(i, shape)
+  n <- length(list)
+  pb <- txtProgressBar(min = 0, max = n, style = 3)
+  for (i in 1:length(list)){
+    #print(i) #debug line
+    subid <- get_subid_shp(list[i], shape)
     c <- get_usage(subid)
-    c$SUBID <- i
+    c$SUBID <- list[i]
     uziv <- plyr::rbind.fill(uziv, c)
+    setTxtProgressBar(pb, i)
   }
+  close(pb)
   uziv <- uziv[,c(1,2,3,4,8)]
   uziv$NAS <- apply(X = uziv, MARGIN = 1, FUN = function(x) sum(is.na(x)))
   uziv <- data.table(uziv)
@@ -181,20 +190,20 @@ usage.VUV2HYPE <- function(subid, data){
   # arg data: the dataframe of water usage
   # return: HYPE friendly dataframe of water usage
   
-  print(subid)
-  message("Zuzuji vyber ...")
+  #print(subid)
+  #message("Zuzuji vyber ...")
   sekce <- data[SUBID == subid,]
   sekce$POD[is.na(sekce$POD)] <- 0
   sekce$POV[is.na(sekce$POV)] <- 0
   sekce$VYP[is.na(sekce$VYP)] <- 0
-  message("Vytvarim casovou osu ...")
+  #message("Vytvarim casovou osu ...")
   zac <- som(data[SUBID == subid,1][1])
   poc <- nrow(data[SUBID == subid,])
   start <- seq(as.POSIXct(zac),length.out = poc,by = "months")
   cas <- data.frame(fromdate = start, todate = eom(start))
-  message("Pocitam bilanci ...")
+  #message("Pocitam bilanci ...")
   bil <- (1000*(sekce$VYP-(sekce$POD+sekce$POV)))/(ceiling(as.numeric(as.POSIXct(cas$todate)-as.POSIXct(cas$fromdate)))+1)
-  message("Vytvarim PointSourceData ...")
+  #message("Vytvarim PointSourceData ...")
   PointSourceData <- data.frame(subid = sekce$SUBID, ps_vol = bil, fromdate = round.POSIXt(x = cas$fromdate, units = "days"), todate = cas$todate)
   return(PointSourceData)
 }
@@ -205,6 +214,7 @@ usage.VUV2HYPE <- function(subid, data){
 #' for all SUBIDs in the list 
 #'
 #' @param list list of SUBID numbers
+#' @param data: the dataframe of water usage
 #' @param write if TRUE writes PointSourceData.txt file
 #' @param path_out path where to save the PointSourceData.txt file
 #'
@@ -214,19 +224,24 @@ usage.VUV2HYPE <- function(subid, data){
 #' usage.VUV2HYPE_all(list = c(2,3,4), write = TRUE, path_out = "D:/PointSourceData.txt")
 #'
 
-usage.VUV2HYPE_all <- function(list, write, path_out){
+usage.VUV2HYPE_all <- function(list, data, write, path_out){
   # desc: Function usage.VUV2HYPE_all returns HYPE friendly dataframe of water usage
   # for all SUBIDs in the list 
   # arg list: list of SUBID numbers
+  # arg data: the dataframe of water usage
   # arg write: if TRUE writes PointSourceData.txt file
   # arg path_out: path where to save the PointSourceData.txt file
   
   library(HYPEtools)
   PointSourceData = list()
-  for (i in list){
-    usage <- usage.VUV2HYPE(i)
+  n <- length(list)
+  pb <- txtProgressBar(min = 0, max = n, style = 3)
+  for (i in 1:length(list)){
+    usage <- usage.VUV2HYPE(subid = list[i], data = data)
     PointSourceData <- rbind(PointSourceData, usage)
+    setTxtProgressBar(pb, i)
   }
+  close(pb)
   if (write == TRUE){
     WritePointSourceData(x = PointSourceData, filename = path_out)
   } else {
@@ -253,16 +268,16 @@ swgw.VUV2HYPE <- function(subid, data){
   # arg data: the dataframe of water usage
   # return: data frame with ratio between ground water and surface water withdrawal
   
-  print(subid)
-  message("Zuzuji vyber ...")
+  #print(subid)
+  #message("Zuzuji vyber ...")
   sekce <- data[SUBID == subid,]
   sekce$POD[is.na(sekce$POD)] <- 0
   sekce$POV[is.na(sekce$POV)] <- 0
   sekce$VYP[is.na(sekce$VYP)] <- 0
-  message("Pocitam bilanci ...")
+  #message("Pocitam bilanci ...")
   pom <- ((100/(sum(sekce$POD)+sum(sekce$POV)))*sum(sekce$POD))/100
-  message("Vytvarim MgmtData ...")
-  MgmtData <- data.frame(subid = i, gw_part = pom)
+  #message("Vytvarim MgmtData ...")
+  MgmtData <- data.frame(subid = subid, gw_part = pom)
   return(MgmtData)
   
 }
@@ -282,20 +297,25 @@ swgw.VUV2HYPE <- function(subid, data){
 #' swgw.VUV2HYPE_all(list = c(2,3,4), write = TRUE, path_out = "D:/MgmtData.txt")
 #'
 
-swgw.VUV2HYPE_all <- function(list, write, path_out){
+swgw.VUV2HYPE_all <- function(list, data, write, path_out){
   # desc: Function swgw.VUV2HYPE calculates the ratio between ground water 
   # and surface water withdrawal for all SUBIDs in the list 
   # arg list: list of SUBID numbers
+  # arg data: the dataframe of water usage
   # arg write: if TRUE writes MgmtData.txt file
   # arg path_out: path where to save the MgmtData.txt file
   
   library(HYPEtools)
   library(data.table)
   MgmtData <- list()
-  for (i in list){
-    ratio <- swgw.VUV2HYPE(i)
+  n <- length(list)
+  pb <- txtProgressBar(min = 0, max = n, style = 3)
+  for (i in 1:length(list)){
+    ratio <- swgw.VUV2HYPE(subid = list[i], data = data)
     MgmtData <- rbind(MgmtData, ratio)
+    setTxtProgressBar(pb, i)
   }
+  close(pb)
   MgmtData <- data.table(MgmtData)
   MgmtData[is.na(gw_part),gw_part:= 0]
   if (write == TRUE){
