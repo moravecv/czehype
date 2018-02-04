@@ -58,10 +58,10 @@ clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil
   
   if (clean == TRUE){
     col_pos <- grep("SLC_", colnames(gd3)) # indexes of colums with SLC
-    col_sum = colSums(gd3[grep("SLC_", colnames(gd3))]) # colsum of SLC columns
-    zeros = which(col_sum == 0) # indexes of columns having zero sum
+    col_sum <- colSums(gd3[grep("SLC_", colnames(gd3))]) # colsum of SLC columns
+    zeros <- which(col_sum == 0) # indexes of columns having zero sum
     gd3[,col_pos[zeros]] <- NULL # delete columns having zero sum
-    gc = gc[-zeros,] # delete rows from GeoClass dataframe
+    gc <- gc[-zeros,] # delete rows from GeoClass dataframe
     gc[,1] <- 1:nrow(gc) # new numbering of GeoClass dataframe
     col_pos2 <- grep("SLC_", colnames(gd3)) # new indexes of colums with SLC
     colnames(gd3)[col_pos2] <- paste0("SLC_",gc[,1]) # new numbering of GeoData dataframe
