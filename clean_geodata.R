@@ -57,7 +57,13 @@ clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil
   }
   
   if (m2 == TRUE){
-    gd3 <- CleanSLCClasses(gd = gd2, gcl = gc, m2.frac = m2.frac, m2.abs = m2.abs, progbar = T)
+    cols <- which(gc[,8] %in% c(1,2,12))
+    cols_names <- paste0("SLC_",cols)
+    pos <- which(colnames(gd2) %in% cols_names)
+    colnames(gd2)[pos] <- paste0("TEMP_",cols)
+    gc2 <- gc[-c(nrow(gc), nrow(gc)-1, nrow(gc)-2),]
+    gd3 <- CleanSLCClasses(gd = gd2, gcl = gc2, m2.frac = m2.frac, m2.abs = m2.abs, progbar = T)
+    colnames(gd3)[pos] <- paste0("SLC_",cols)
   } else {
     gd3 <- gd2
   }
