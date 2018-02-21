@@ -78,13 +78,13 @@ create_geoclass <- function(in_file, vg_typ1, vg_typ2,vg_typ3, sc_river, sc_wbod
   GC[COMBINATION == "5151", special_class:= 2]
   GC[COMBINATION == "5050", vegetationstyp:= 3]
   GC[COMBINATION == "5151", vegetationstyp:= 3]
-  GC[COMBINATION == "5050", SOILTYPE:= 1]
   ###### Water related values #######
   GC[special_class %in% c(1,2,12), drain_depth:=1]
   GC[special_class %in% c(1,2,12), soil_layers:=1]
   GC[special_class %in% c(1,2,12), depth_s1:=1]
   GC[special_class %in% c(1,2,12), depth_s2:=1]
   GC[special_class %in% c(1,2,12), depth_s3:=1]
+  GC[special_class %in% c(1,2,12), SOILTYPE:=99]
   ###### Clean#######
   GC$DEPTH <- NULL
   GC$COMBI_CHECK <- GC$COMBINATION
