@@ -8,6 +8,7 @@
 #' @param headrow number indicating position of headrow in GeoClass file
 #' @param m1.file_land see HYPEtools::CleanSLCClasses() help
 #' @param m1.file_soil see HYPEtools::CleanSLCClasses() help
+#' @param m2 if TRUE, performs m2 clean
 #' @param m2.frac see HYPEtools::CleanSLCClasses() help
 #' @param m2.abs see HYPEtools::CleanSLCClasses() help
 #' @param land_1st if TRUE, performs cleaning by landuse first then soil and vice versa
@@ -20,10 +21,10 @@
 #' @examples
 #' clean_geodata(geodata = "E:/GeoData.txt", geoclass = "E:/GeoClass.txt", headrow = 1,
 #' m1.file_land = "E:/transfer_land.txt", m1.file_soil = "E:/transfer_soil.txt",
-#' m2.frac = 0.02, m2.abs = 10000, clean = T)
+#' m2 = T, m2.frac = 0.02, m2.abs = 10000, clean = T)
 
 clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil,
-                          m2.frac, m2.abs, land_1st, clean){
+                          m2, m2.frac, m2.abs, land_1st, clean){
   # desc: Cleans small SLC fractions in GeoData using funcion CleanSLCClasses, 
   # first by method 1 for landuse and soil respectively and then by method 2. 
   # Optionally it cleans out columns of SLCs populated by just zeros and fixes 
@@ -33,6 +34,7 @@ clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil
   # arg headrow: number indicating position of headrow in GeoClass file
   # arg m1.file_land: see HYPEtools::CleanSLCClasses() help
   # arg m1.file_soil: see HYPEtools::CleanSLCClasses() help
+  # arg m2: if TRUE, performs m2 clean
   # arg m2.frac: see HYPEtools::CleanSLCClasses() help
   # arg m2.abs: see HYPEtools::CleanSLCClasses() help
   # arg land_1st: if TRUE, performs cleaning by landuse first then soil and vice versa
@@ -54,7 +56,12 @@ clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil
                            m1.clean = c(T,T), m1.precedence = c(T,T), progbar = T)
   }
   
-  gd3 <- CleanSLCClasses(gd = gd2, gcl = gc, m2.frac = m2.frac, m2.abs = m2.abs, progbar = T)
+  if (m2 == TRUE){
+    gd3 <- CleanSLCClasses(gd = gd2, gcl = gc, m2.frac = m2.frac, m2.abs = m2.abs, progbar = T)
+  } else {
+    gd3 <- gd2
+  }
+  
   
   if (clean == TRUE){
     col_pos <- grep("SLC_", colnames(gd3)) # indexes of colums with SLC
