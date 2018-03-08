@@ -18,6 +18,7 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
   #n <- length(subid)
   #pb <- txtProgressBar(min = 0, max = n, style = 3)
   for (j in subid){
+    print(j)
     gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC") # indexes of SLC columns
     #slc <- gd[which(gd$SUBID == subid[j]), gdcols.slc]
     slc <- gd[which(gd$SUBID == j), gdcols.slc] # SCL columns for specified subid
@@ -33,26 +34,34 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
     } else {
       val_change <- fraction * sum(slc[,gc[which(gc[,2] == from),1]])
       # total fraction to be moved from separate SLC's
-      fixing <- slc[,gc[which(gc[,2] == from),1]] # SLC's of landuse to be moved
-      pointers <- which(fixing != 0) # indexes of values to be modified
-      inverse <- 1 - fixing[,pointers] # addition to 1 of values to be fixed 
-      scale <- inverse / sum(inverse) # scale of values to be fixed
-      vec <- fixing[,pointers] - (scale * val_change) # vector of values after deduction
-      if (any(vec < 0)){
-        # if any value in fixed vector is lower than 0 proceed with while cycle
-        while (any(vec < 0)){
-          # while any value in fixed vector is lower than 0 repeat cycle
-          minus <- vec[which(vec < 0)] # value(s) lower than 0
-          deduct <- sum(minus) # sum of value(s) lower than 0
-          plus <- vec[,vec > 0] # value(s) higher than 0
-          vec[which(vec < 0)] <- 0 # set to zero the values which are negative
-          inverse2 <- 1 - plus # vector of add-on values to 1
-          scale2 <- inverse2 / sum(inverse2) # scale of values to be fixed
-          vec[,vec > 0] <- vec[,vec > 0] - (scale2 * abs(deduct)) # vector of fixed values
-        }
-        slc[,gc[which(gc[,2] == from),1]][pointers] <- vec
-        # write vetor of fixed values into SLC row of specified subid
-      } else { next }}
+      if (val_change == 0) {
+        message("Warning: Subid ", j, " has 0 fraction to move")
+      } else {
+        fixing <- slc[,gc[which(gc[,2] == from),1]] # SLC's of landuse to be moved
+        pointers <- which(fixing != 0) # indexes of values to be modified
+        inverse <- 1 - fixing[,pointers] # addition to 1 of values to be fixed
+        if (length(inverse) == 1 && inverse == 0){
+          vec <- fixing[,pointers] - val_change
+          slc[,gc[which(gc[,2] == from),1]][pointers] <- vec
+        } else {
+          scale <- inverse / sum(inverse) # scale of values to be fixed
+          vec <- fixing[,pointers] - (scale * val_change) # vector of values after deduction
+          if (any(vec < 0)){
+            # if any value in fixed vector is lower than 0 proceed with while cycle
+            while (any(vec < 0)){
+              # while any value in fixed vector is lower than 0 repeat cycle
+              minus <- vec[which(vec < 0)] # value(s) lower than 0
+              deduct <- sum(minus) # sum of value(s) lower than 0
+              plus <- vec[,vec > 0] # value(s) higher than 0
+              vec[which(vec < 0)] <- 0 # set to zero the values which are negative
+              inverse2 <- 1 - plus # vector of add-on values to 1
+              scale2 <- inverse2 / sum(inverse2) # scale of values to be fixed
+              vec[,vec > 0] <- vec[,vec > 0] - (scale2 * abs(deduct)) # vector of fixed values
+            }
+            slc[,gc[which(gc[,2] == from),1]][pointers] <- vec
+            # write vetor of fixed values into SLC row of specified subid
+          } else { next }
+        }}}
     
     indexes <- which(!original %in% slc) # indexes of modified values
     for (i in indexes){
