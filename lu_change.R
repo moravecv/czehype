@@ -74,7 +74,8 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
             slc[,gc[which(gc[,2] == from),1]][pointers] <- vec }
         }}}
     
-    indexes <- which(!original %in% slc) # indexes of modified values
+    difference <- original - slc # difference between original SLC row and modified
+    indexes <- which(difference != 0) # indexes of modified values
     for (i in indexes){
       orig <- original[i] # original value
       new <- slc[i] # new value
