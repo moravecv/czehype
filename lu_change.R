@@ -70,7 +70,8 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
             }
             slc[,gc[which(gc[,2] == from),1]][pointers] <- vec
             # write vetor of fixed values into SLC row of specified subid
-          } else { next }
+          } else { 
+            slc[,gc[which(gc[,2] == from),1]][pointers] <- vec }
         }}}
     
     indexes <- which(!original %in% slc) # indexes of modified values
