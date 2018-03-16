@@ -11,7 +11,7 @@
 #' @return data.table with desired variables
 #' @export text_file 
 #'
-#' soilclim2hype(basins = c("BER_3030", "HVL_3030"), variables = "Rain",
+#' soilclim2hype(basins = c("BER_3030.rds", "HVL_3030.rds"), variables = "Rain",
 #' path_soilclim = "E:/SOILCLIM/", write = T, xobs = T, varhype = "rswe",
 #' path_out = "E:/SOLCLIM_OUT/Xobs.txt")
 #'
@@ -35,7 +35,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     n <- length(basins)
     pb <- txtProgressBar(min = 0, max = n, style = 3)
     for (i in 1:n){
-      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
+      a <- data.table(readRDS(file = paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
       setTxtProgressBar(pb, i)
@@ -50,7 +50,7 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     n <- length(basins)
     pb <- txtProgressBar(min = 0, max = n, style = 3)
     for (i in 1:n){
-      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
+      a <- data.table(readRDS(file = paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
       setTxtProgressBar(pb, i)
@@ -67,7 +67,8 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     n <- length(basins)
     pb <- txtProgressBar(min = 0, max = n, style = 3)
     for (i in 1:n){
-      a <- data.table(readRDS(paste0(path_soilclim, basins[i]))) # read rds
+      #print(basins[i]) # debug line
+      a <- data.table(readRDS(file = paste0(path_soilclim, basins[i]))) # read rds
       b <- a[, c("UPOV_ID","DTM", variables), with = FALSE] # extract desired columns
       c <- rbind(c,b) # join them together
       setTxtProgressBar(pb, i)
