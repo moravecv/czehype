@@ -70,7 +70,7 @@ demc_spaghetti_violin <- function(allsim, ngen, npop, params){
   } else {
     ######################## PARAMETERS ########################
     
-    ggp <- data.frame(allgen, allpop, allbin, allsim[, c(21:(ncol(allsim) - 3), ncol(allsim))])
+    ggp <- data.frame(allgen, allpop, allbin, allsim[, c(max(which(grepl(x = colnames(allsim), pattern = "nummc"))):(ncol(allsim) - 3), ncol(allsim))])
     # replace non-accepted iterations with parent iterations (q&d version with for loops)
     ggp.te <- split(x = ggp, f = ggp$allpop)
     ggp <- ggp[-c(1:nrow(ggp)), ]
@@ -85,16 +85,15 @@ demc_spaghetti_violin <- function(allsim, ngen, npop, params){
       ggp <- rbind(ggp, cbind(allgpb, te))
     }
     rm(i, j, te, ggp.te, allgpb)
+    ggp <- ggp[-which(grepl(x = colnames(ggp), pattern = "nummc"))]
     # melt into form so that all parameters are concatenated in one "variable" vector
     ggp <- melt(ggp, id.vars = 1:3, measure.vars = 4:(ncol(ggp) - 1))
-    ggp <- data.table(ggp)
-    ggp <- ggp[!variable %in% c("numrc", "nummc")]
     ggplot(data = ggp, aes(x = allgen, y = value)) +
       scale_colour_gradient(name = "DEMC\npopulation") +
       scale_fill_gradient(name = "DEMC\npopulation") +
       geom_line(aes(colour = allpop, group = allpop), alpha = 0.5)  +
       geom_violin(aes(group = allbin), position = position_identity(), fill = NA, colour = "black") +
-      facet_wrap(~ variable, nrow = 9, ncol = 2, scales = "free_y") +
+      facet_wrap(~ variable, nrow = 9, ncol = 3, scales = "free_y") +
       xlab("DEMC generation") + ylab("Parameter value")
   }
 }
