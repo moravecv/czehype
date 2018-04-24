@@ -31,7 +31,6 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
     #print(j) # debug line
     gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC") # indexes of SLC columns
     slc <- gd[which(gd$SUBID == subid[j]), gdcols.slc]
-    #slc <- gd[which(gd$SUBID == j), gdcols.slc] # SCL columns for specified subid
     original <- slc # save original of SLC row for specified subid
     
     if(fraction == 1) {
@@ -45,7 +44,7 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
       val_change <- fraction * sum(slc[,gc[which(gc[,2] == from),1]])
       # total fraction to be moved from separate SLC's
       if (val_change == 0) {
-        nofrac <- append(nofrac,j) # add subid which has no fraction to move in vector
+        nofrac <- append(nofrac, subid[j]) # add subid which has no fraction to move in vector
       } else {
         fixing <- slc[,gc[which(gc[,2] == from),1]] # SLC's of landuse to be moved
         pointers <- which(fixing != 0) # indexes of values to be modified
@@ -98,8 +97,7 @@ lu_change <- function(from, to, fraction, subid, gd, gc){
         # recalculate value that is increased by fraction deducted from SLC 
       }
     }
-    #gd[which(gd$SUBID == j), gdcols.slc] <- slc # write vector of fixed values in the gd dataframe
-    gd[which(gd$SUBID == subid[j]), gdcols.slc] <- slc
+    gd[which(gd$SUBID == subid[j]), gdcols.slc] <- slc # write vector of fixed values in the gd dataframe
     setTxtProgressBar(pb, j)
   }
   close(pb)
