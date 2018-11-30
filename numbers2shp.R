@@ -2,7 +2,7 @@
 #'
 #' @param shp path to input shapefile to be numbered according to HYPE structure
 #' @param layer name of the layer in shapefile
-#' @param match_col column name for matching the numbering
+#' @param match_col column name for matching the numbering (identical for both .shp and .rds)
 #' @param number_table path to table with upstream downstream connections
 #' @param write write shapefile if TRUE
 #' @param path_out path where to save the shapefile
