@@ -58,11 +58,20 @@ soilclim2hype <- function(basins, variables, path_soilclim, write = FALSE,
     close(pb)
     message("Executing dcast ...")
     d <- dcast(data = c, formula = DTM ~ UPOV_ID, value.var = variables) # dcast it into hype structure
-    WriteXobs(x = d, filename = path_out, comment = variables,
-              variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
-              subid = colnames(d)[2:length(d)])
-    
-  } else {
+    if (length(variables) > 1){
+      colname <- colnames(d)[2:length(colnames(d))]
+      for (i in variables){
+        colname <- str_remove(string = colname, pattern = paste0(i, "_"))
+      }
+      WriteXobs(x = d, filename = path_out, comment = paste(variables, collapse=", "),
+                variable = rep(varhype, each = length(colnames(d)[2:ncol(d)]) / length(varhype)),
+                subid = colname)
+      } else {
+        WriteXobs(x = d, filename = path_out, comment = variables,
+                  variable = rep(varhype, length(colnames(d)[2:ncol(d)])),
+                  subid = colnames(d)[2:length(d)])
+    }
+    } else {
     c <- data.table() # empty data table
     n <- length(basins)
     pb <- txtProgressBar(min = 0, max = n, style = 3)
