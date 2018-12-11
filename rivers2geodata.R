@@ -10,8 +10,8 @@
 #' @export text_file of GeoData
 #'
 #' @examples 
-#' rivers2geodata(geodata = "E:/Data/GeoData_V01.txt", rivlen = E:/Data/OLAKE_AREA.rds",
-#' write T, path_out = "E:/Data/Geodata_fixed.txt")
+#' rivers2geodata(geodata = "E:/Data/GeoData_V01.txt", rivlen = "E:/Data/OLAKE_AREA.rds",
+#' write = T, path_out = "E:/Data/Geodata_fixed.txt")
 #' 
 
 rivers2geodata = function(geodata, rivlen, write, path_out){

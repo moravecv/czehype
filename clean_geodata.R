@@ -19,9 +19,9 @@
 #' @return if param clean FALSE - data frame of fixed GeoData
 #'
 #' @examples
-#' clean_geodata(geodata = "E:/GeoData.txt", geoclass = "E:/GeoClass.txt", headrow = 1,
+#' clean_geodata(geodata = "E:/GeoData.txt", geoclass = "E:/GeoClass.txt", headrow = 1",
 #' m1.file_land = "E:/transfer_land.txt", m1.file_soil = "E:/transfer_soil.txt",
-#' m2 = T, m2.frac = 0.02, m2.abs = 10000, clean = T)
+#' m2 = T, m2.frac = 0.02, m2.abs = 10000, clean = T, land_1st = T)
 
 clean_geodata <- function(geodata, geoclass, headrow, m1.file_land, m1.file_soil,
                           m2, m2.frac, m2.abs, land_1st, clean){
