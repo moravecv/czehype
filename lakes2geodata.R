@@ -13,7 +13,7 @@
 #'
 #' @examples 
 #' lakes2geodata(geodata = "E:/Data/GeoData_V01.txt", olake_area = "E:/Data/OLAKE_AREA.rds",
-#' ilake_area = "E:/Data/ILAKE_AREA.rds", write = T, path_out = "E:/Data/Geodata_fixed.txt")
+#' ilake_area = "E:/Data/ILAKE_AREA.rds", match_col = "UPOV_ID", write = T, path_out = "E:/Data/Geodata_fixed.txt")
 #' 
 
 lakes2geodata <- function(geodata, olake_area, ilake_area, match_col, write, path_out){

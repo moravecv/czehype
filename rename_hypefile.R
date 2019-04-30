@@ -1,11 +1,11 @@
 #' Renames columns of input file according to a table of names
 #' in such manner that HYPE recognizes
 #' 
-#' @param in_file input file to be renamed
-#' @param name_table table of names
+#' @param in_file input file to be renamed (in environment of R)
+#' @param name_table table of names (in environment of R)
 #' @param col_old string name of column in table of names with old name
 #' @param col_new string name of column in table of names with replacement
-#' @param multiple TRUE if multiple variables included 
+#' @param multiple TRUE if multiple variables included (when Xobs)
 #' @param num_vals number of variables included
 #'
 #' @return data.table - renamed input file
@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' renamehypefile(in_file = in_file, name_table = name_table,
-#' col_old = "FROM", col_new = "FR_ORD")
+#' col_old = "FROM", col_new = "FR_ORD", multiple = T, num_vals = 3)
 #' 
 
 renamehypefile <- function(in_file, name_table, col_old, col_new, multiple, num_vals){
